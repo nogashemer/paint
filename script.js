@@ -11,27 +11,7 @@ var colorsBar = document.getElementById('colors-bar');
 var navBar = document.getElementById('nav-bar');
 var penColor = "black";
 
-// generate colors bar
-function addColor(hexColor) {
-  var color = document.createElement("div");
-  color.classList.add("btnClass");
-  colorsBar.appendChild(color);
-  color.style.backgroundColor = `${hexColor}`;
-  color.addEventListener('click', function () {
-    penColor = `${hexColor}`;
-  }
-  )
-};
 
-addColor("salmon");
-addColor("#ff5a36");
-addColor("#cecb24");
-addColor("#39a78e");
-addColor("#c3a278");
-addColor("#8e518d");
-addColor("#74647e");
-addColor("#81d8d4");
-addColor("#159e96");
 
 // pick color
 
@@ -58,19 +38,18 @@ canvas.addEventListener('mousemove', e => {
   }
 });
 
-canvas.addEventListener('mouseup', e => {
+document.addEventListener('mouseup', e => {
   if (isDrawing === true) {
-    drawLine(x, y, e.clientX, e.clientY);
-    x = 0;
-    y = 0;
+
     isDrawing = false;
   }
 });
 
-function calcC(x1, x2, y1, y2) {
-  var x = x2 - x1;
-  var y = y2 - y1;
-  var c = Math.sqrt(x * x + y * y);
+function calcC(x1, y1, x2, y2) {
+  var thex = x2 - x1;
+  var they = y2 - y1;
+  var c = Math.sqrt(thex * thex + they * they);
+  console.log(c)
   return c;
 }
 
@@ -90,18 +69,14 @@ function drawLine(x1, y1, x2, y2) {
   var newPixel = document.createElement("div");
   newPixel.classList.add("pixelClass");
   canvas.appendChild(newPixel);
-  newPixel.style.top = `${y2 - ((y2 - y1) / 2)}px`;
-  newPixel.style.left = `${x2 - (Math.abs(x2 - x1) / 2)}px`;
+  newPixel.style.top = `${y2 - (Math.abs(y2 - y1) / 2)}px`;
+  newPixel.style.left = `${x2 - (calcC(x1, y1, x2, y2) * 1.1) / 2}px`;
   var angle = getAngle(x1, y1, x2, y2);
   newPixel.style.transform = `rotate(${angle}deg)`;
-  newPixel.style.width = `${calcC(x1, x2, y1, y2) * 1.1}px`;
+  newPixel.style.width = calcC(x1, y1, x2, y2) * 1.1 + "px";
   newPixel.style.backgroundColor = penColor;
+
 };
-
-
-
-
-
 
 // buttons
 function newCanvas() {
@@ -149,12 +124,34 @@ function canvasSize(size) {
         input.style.color = ('red');
       }
     }
-    console.log(canvas.style.value);
+
   });
 
 };
 
-// newCanvas.style.backgroundColor = "white";
+// generate colors bar
+function addColor(hexColor) {
+  var color = document.createElement("div");
+  color.classList.add("btnClass");
+  colorsBar.appendChild(color);
+  color.style.backgroundColor = `${hexColor}`;
+  color.addEventListener('click', function () {
+    penColor = `${hexColor}`;
+  }
+  )
+};
+
+addColor("salmon");
+addColor("#ff5a36");
+addColor("#cecb24");
+addColor("#39a78e");
+addColor("#c3a278");
+addColor("#8e518d");
+addColor("#74647e");
+addColor("#81d8d4");
+addColor("#159e96");
+
+
 newCanvas();
 canvasSize("width");
 canvasSize("height");
